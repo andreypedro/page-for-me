@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LinkBlocksList from '../components/LinkBlocksList';
-import type { LinkBlock } from '../types';
+import type { LinkBlock, Profile } from '../types';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store';
+import { setUser } from '../store/userSlice';
 
 export default function LinkEditor() {
-  const [blocks, setBlocks] = useState<LinkBlock[]>([
-    {
-      id: '1',
-      title: 'Meu Site',
-      url: 'https://example.com',
-      type: 'default',
-      order: 0,
-    },
-  ]);
+  const dispatch = useDispatch();
+  const profile = useSelector((state: RootState) => state.user.user) as Profile | null;
+  const [blocks, setBlocks] = useState<LinkBlock[]>([]);
+
+  // Inicializa blocks apenas uma vez a partir do Redux
+  useEffect(() => {
+    if (profile && profile.links) {
+      setBlocks(profile.links);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Executa só no mount
+
+  // Salva os links no Redux sempre que blocks mudar e for diferente do que está na store
+  useEffect(() => {
+    if (profile && JSON.stringify(profile.links) !== JSON.stringify(blocks)) {
+      dispatch(setUser({ ...profile, links: blocks }));
+    }
+  }, [blocks]);
 
   const handleReorder = (newBlocks: LinkBlock[]) => {
     setBlocks(newBlocks);
@@ -65,6 +77,15 @@ export default function LinkEditor() {
           onDelete={handleDelete}
           onEdit={handleEdit}
         />
+      </div>
+      <div className="mt-12 text-center text-sm text-gray-500">
+        <span>Quer adicionar suas redes sociais? </span>
+        <a
+          href="/app/profile"
+          className="inline-block ml-1 px-4 py-2 rounded-md bg-blue-600 text-white font-medium shadow hover:bg-blue-700 transition-colors"
+        >
+          Ir para Perfil
+        </a>
       </div>
     </div>
   );

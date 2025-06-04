@@ -1,8 +1,4 @@
-import React, { useState } from 'react';
-import ThemeSettings from '../components/Settings/ThemeSettings';
-
 export default function Settings() {
-  const [theme, setTheme] = useState('default');
 
   // Simulação de plano atual
   const currentPlan = {
