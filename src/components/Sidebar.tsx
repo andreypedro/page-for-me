@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import {
+import { Globe2,
   LayoutDashboard,
   Link as LinkIcon,
   BarChart2,
@@ -9,10 +9,11 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/app/', icon: LayoutDashboard },
+  { name: 'Perfil', href: '/app/profile', icon: User },
+  { name: 'Links', href: '/app/links', icon: LinkIcon },
   { name: 'Analytics', href: '/app/analytics', icon: BarChart2 },
-  { name: 'Profile', href: '/app/profile', icon: User },
-   { name: 'Links', href: '/app/links', icon: LinkIcon },
-  { name: 'Settings', href: '/app/settings', icon: Settings },
+  { name: 'Página Pública', href: '/u/user', icon: Globe2, external: true },
+  { name: 'Configurações', href: '/app/settings', icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -123,7 +124,18 @@ export default function Sidebar() {
           {navigation.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.href;
-            return (
+            return item.external ? (
+              <a
+                key={item.name}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group flex items-center px-4 py-3 rounded-lg transition-all duration-200 font-semibold text-base shadow-sm hover:bg-blue-500 hover:text-white text-blue-100`}
+              >
+                <Icon className="mr-3 h-6 w-6 text-blue-200 group-hover:text-white" />
+                {item.name}
+              </a>
+            ) : (
               <Link
                 key={item.name}
                 to={item.href}
@@ -147,9 +159,6 @@ export default function Sidebar() {
           })}
         </div>
       </nav>
-      <div className="mt-auto p-4 border-t border-blue-500 text-xs text-blue-100 opacity-80">
-        &copy; {new Date().getFullYear()} PageFor.me
-      </div>
     </div>
   );
 }
